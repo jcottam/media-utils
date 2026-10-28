@@ -15,7 +15,7 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
-import { toolHref, tools } from "@/lib/tools";
+import { toolGroups, toolHref } from "@/lib/tools";
 
 export function AppSidebar() {
   const pathname = usePathname();
@@ -52,26 +52,28 @@ export function AppSidebar() {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
-        <SidebarGroup>
-          <SidebarGroupLabel>Tools</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {tools.map((tool) => {
-                const href = toolHref(tool);
-                return (
-                  <SidebarMenuItem key={tool.slug}>
-                    <SidebarMenuButton asChild isActive={pathname === href || pathname.startsWith(`${href}/`)}>
-                      <Link href={href}>
-                        <tool.icon />
-                        <span>{tool.title}</span>
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                );
-              })}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+        {toolGroups.map((group) => (
+          <SidebarGroup key={group.label}>
+            <SidebarGroupLabel>{group.label}</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {group.tools.map((tool) => {
+                  const href = toolHref(tool);
+                  return (
+                    <SidebarMenuItem key={tool.slug}>
+                      <SidebarMenuButton asChild isActive={pathname === href || pathname.startsWith(`${href}/`)}>
+                        <Link href={href}>
+                          <tool.icon />
+                          <span>{tool.title}</span>
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  );
+                })}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        ))}
       </SidebarContent>
       <SidebarRail />
     </Sidebar>
