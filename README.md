@@ -9,10 +9,11 @@ A growing set of tools to package and prepare content for social media and produ
 | `/clipper` | Trim video from an allowlisted URL or a private `uploads/` file; export MP4 to `clips/`; optional transcription; **Vertical 9:16** mode |
 | `/reframe` | Reframe landscape video to 9:16 (1080×1920) with adjustable crop; same upload/URL sources as the clipper |
 | `/images` | Upload images to `images/`; labels, tags, and sheet copy for the DealBook calendar |
+| `/file-browser` | Browse recent clips and images from Blob; copy links or delete assets |
 | `/social-post-preview` | Build Instagram and X mockups, create named share links, manage share history |
 | `/preview/<id>` | View-only review page for a share link (mockups + team comments). Not in the sidebar |
 
-Internal routes (`/`, `/clipper`, `/reframe`, `/images`, `/social-post-preview`) are meant to sit behind **Cloudflare Zero Trust**. Share links at `/preview/<id>` are for reviewers; editors who pass Access may see **Edit Preview** in the header (see **Access** below).
+Internal routes (`/`, `/clipper`, `/reframe`, `/images`, `/file-browser`, `/social-post-preview`) are meant to sit behind **Cloudflare Zero Trust**. Share links at `/preview/<id>` are for reviewers; editors who pass Access may see **Edit Preview** in the header (see **Access** below).
 
 ## Repository layout
 
@@ -26,7 +27,7 @@ Internal routes (`/`, `/clipper`, `/reframe`, `/images`, `/social-post-preview`)
 
 ### Adding a tool
 
-1. Add an entry to `lib/tools.ts` (slug, title, description, icon). It shows up in the sidebar and dashboard.
+1. Add an entry to `lib/tools.ts` in the right `toolGroups` section (slug, title, description, icon). It shows up in the sidebar and dashboard.
 2. Create `app/<slug>/page.tsx` and put its components in `components/<slug>/`.
 3. Put any server routes under `app/api/`.
 
@@ -97,6 +98,10 @@ Blob setup (once per Vercel project):
 4. Locally: `vercel env pull .env.local`.
 
 Deleted images can stay in the CDN cache for up to a minute.
+
+### File browser (`/file-browser`)
+
+Read-only view of public Blob assets: exported MP4s under `clips/` and uploads under `images/`, newest first. Uses `GET /api/clips` and `GET /api/images` (same listings as the social post preview picker). Requires **`BLOB_READ_WRITE_TOKEN`** on the `media-utils-clips-public` store. Copy link, open in a new tab, edit labels (`PUT /api/labels`), or delete (`DELETE /api/images` and `DELETE /api/clips` remove the file and any label or tag sidecars in its folder).
 
 ### Social post preview (`/social-post-preview`)
 

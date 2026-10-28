@@ -145,6 +145,15 @@ export async function deletePublicImage(pathname: string) {
   await del(urls.length ? urls : pathname, { token });
 }
 
+/** Removes the clip and its label sidecars. */
+export async function deletePublicClip(pathname: string) {
+  if (!isClipPathname(pathname)) throw new Error("Invalid clip path");
+  const token = publicBlobToken();
+  const { blobs } = await list({ prefix: assetFolder(pathname), token });
+  const urls = blobs.filter((b) => b.pathname === pathname || isSidecar(b.pathname)).map((b) => b.url);
+  await del(urls.length ? urls : pathname, { token });
+}
+
 export function isLabelableAsset(pathname: string) {
   return isImagePathname(pathname) || isClipPathname(pathname);
 }
